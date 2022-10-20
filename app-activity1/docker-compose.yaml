@@ -1,0 +1,33 @@
+version: '2'
+services:
+  eureka-service:
+    build: ./app-eureka-server/
+    ports:
+      - "8761:8761"
+  gateway:
+    build: ./app-gateway/
+    ports:
+      - "9000:9000"
+    depends_on:
+      - eureka-service
+      - customer-service
+      - billing-service
+    environment:
+      - eureka.client.service-url.defaultZone=http://eureka-service:8761/eureka
+  customer-service:
+    build: ./app-customer-service/ 
+    ports:
+      - "8082:8082"
+    depends_on:
+      - eureka-service
+    environment:
+      - eureka.client.service-url.defaultZone=http://eureka-service:8761/eureka
+  billing-service:
+    build: ./app-billing-service/
+    ports:
+      - "8083:8083"
+    depends_on:
+      - eureka-service
+      - customer-service
+    environment:
+      - eureka.client.service-url.defaultZone=http://eureka-service:8761/eureka
