@@ -1,9 +1,36 @@
-version: '2'
+version: '2.3'
 services:
   eureka-service:
     build: ./app-eureka-server/
     ports:
       - "8761:8761"
+  
+  customer-service:
+    build: ./app-customer-service/ 
+    ports:
+      - "8082:8082"
+    depends_on:
+      - eureka-service
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8082/api/v1/customers"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    environment:
+      - eureka.client.service-url.defaultZone=http://eureka-service:8761/eureka
+
+  billing-service:
+    build: ./app-billing-service/
+    ports:
+      - "8083:8083"
+    depends_on:
+      customer-service:
+        condition: service_healthy
+     
+    environment:
+      - eureka.client.service-url.defaultZone=http://eureka-service:8761/eureka
+  
   gateway:
     build: ./app-gateway/
     ports:
@@ -12,22 +39,5 @@ services:
       - eureka-service
       - customer-service
       - billing-service
-    environment:
-      - eureka.client.service-url.defaultZone=http://eureka-service:8761/eureka
-  customer-service:
-    build: ./app-customer-service/ 
-    ports:
-      - "8082:8082"
-    depends_on:
-      - eureka-service
-    environment:
-      - eureka.client.service-url.defaultZone=http://eureka-service:8761/eureka
-  billing-service:
-    build: ./app-billing-service/
-    ports:
-      - "8083:8083"
-    depends_on:
-      - eureka-service
-      - customer-service
     environment:
       - eureka.client.service-url.defaultZone=http://eureka-service:8761/eureka
