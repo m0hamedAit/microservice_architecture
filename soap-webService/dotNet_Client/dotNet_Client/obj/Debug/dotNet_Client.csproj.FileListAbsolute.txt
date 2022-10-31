@@ -1,0 +1,11 @@
+D:\BDCC-S5\AOS_&_BigData_Processing\dotNet_Client\dotNet_Client\obj\Debug\dotNet_Client.csproj.AssemblyReference.cache
+D:\BDCC-S5\AOS_&_BigData_Processing\dotNet_Client\dotNet_Client\obj\Debug\dotNet_Client.csproj.SuggestedBindingRedirects.cache
+D:\BDCC-S5\AOS_&_BigData_Processing\dotNet_Client\dotNet_Client\obj\Debug\dotNet_Client.Properties.Resources.resources
+D:\BDCC-S5\AOS_&_BigData_Processing\dotNet_Client\dotNet_Client\obj\Debug\dotNet_Client.csproj.GenerateResource.cache
+D:\BDCC-S5\AOS_&_BigData_Processing\dotNet_Client\dotNet_Client\obj\Debug\dotNet_Client.csproj.CoreCompileInputs.cache
+D:\BDCC-S5\AOS_&_BigData_Processing\dotNet_Client\dotNet_Client\bin\Debug\dotNet_Client.exe.config
+D:\BDCC-S5\AOS_&_BigData_Processing\dotNet_Client\dotNet_Client\bin\Debug\dotNet_Client.exe
+D:\BDCC-S5\AOS_&_BigData_Processing\dotNet_Client\dotNet_Client\bin\Debug\dotNet_Client.pdb
+D:\BDCC-S5\AOS_&_BigData_Processing\dotNet_Client\dotNet_Client\obj\Debug\dotNet_Client.exe
+D:\BDCC-S5\AOS_&_BigData_Processing\dotNet_Client\dotNet_Client\obj\Debug\dotNet_Client.pdb
+D:\BDCC-S5\AOS_&_BigData_Processing\dotNet_Client\dotNet_Client\obj\Debug\dotNet_Client.Convert.resources

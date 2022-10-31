@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<definitions xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsp="http://www.w3.org/ns/ws-policy" xmlns:wsp1_2="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://ws.m0hamedAit.ma/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" name="BankWS" targetNamespace="http://ws.m0hamedAit.ma/" xmlns="http://schemas.xmlsoap.org/wsdl/">
+  <types>
+    <xsd:schema>
+      <xsd:import schemaLocation="http://localhost:9191/?xsd=1" namespace="http://ws.m0hamedAit.ma/" />
+    </xsd:schema>
+  </types>
+  <message name="Convert">
+    <part name="parameters" element="tns:Convert" />
+  </message>
+  <message name="ConvertResponse">
+    <part name="parameters" element="tns:ConvertResponse" />
+  </message>
+  <message name="listAccounts">
+    <part name="parameters" element="tns:listAccounts" />
+  </message>
+  <message name="listAccountsResponse">
+    <part name="parameters" element="tns:listAccountsResponse" />
+  </message>
+  <message name="getAccount">
+    <part name="parameters" element="tns:getAccount" />
+  </message>
+  <message name="getAccountResponse">
+    <part name="parameters" element="tns:getAccountResponse" />
+  </message>
+  <portType name="BankService">
+    <operation name="Convert">
+      <input wsam:Action="http://ws.m0hamedAit.ma/BankService/ConvertRequest" message="tns:Convert" />
+      <output wsam:Action="http://ws.m0hamedAit.ma/BankService/ConvertResponse" message="tns:ConvertResponse" />
+    </operation>
+    <operation name="listAccounts">
+      <input wsam:Action="http://ws.m0hamedAit.ma/BankService/listAccountsRequest" message="tns:listAccounts" />
+      <output wsam:Action="http://ws.m0hamedAit.ma/BankService/listAccountsResponse" message="tns:listAccountsResponse" />
+    </operation>
+    <operation name="getAccount">
+      <input wsam:Action="http://ws.m0hamedAit.ma/BankService/getAccountRequest" message="tns:getAccount" />
+      <output wsam:Action="http://ws.m0hamedAit.ma/BankService/getAccountResponse" message="tns:getAccountResponse" />
+    </operation>
+  </portType>
+  <binding name="BankServicePortBinding" type="tns:BankService">
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <operation name="Convert">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:body use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
+    </operation>
+    <operation name="listAccounts">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:body use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
+    </operation>
+    <operation name="getAccount">
+      <soap:operation soapAction="" />
+      <input>
+        <soap:body use="literal" />
+      </input>
+      <output>
+        <soap:body use="literal" />
+      </output>
+    </operation>
+  </binding>
+  <service name="BankWS">
+    <port name="BankServicePort" binding="tns:BankServicePortBinding">
+      <soap:address location="http://localhost:9191/" />
+    </port>
+  </service>
+</definitions>

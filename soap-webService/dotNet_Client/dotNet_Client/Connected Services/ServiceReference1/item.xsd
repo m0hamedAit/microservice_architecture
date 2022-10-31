@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://ws.m0hamedAit.ma/" targetNamespace="http://ws.m0hamedAit.ma/" version="1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="Convert" type="tns:Convert" />
+  <xs:element name="ConvertResponse" type="tns:ConvertResponse" />
+  <xs:element name="getAccount" type="tns:getAccount" />
+  <xs:element name="getAccountResponse" type="tns:getAccountResponse" />
+  <xs:element name="listAccounts" type="tns:listAccounts" />
+  <xs:element name="listAccountsResponse" type="tns:listAccountsResponse" />
+  <xs:complexType name="Convert">
+    <xs:sequence>
+      <xs:element name="amount" type="xs:double" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ConvertResponse">
+    <xs:sequence>
+      <xs:element name="return" type="xs:double" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="getAccount">
+    <xs:sequence>
+      <xs:element name="code" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="getAccountResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" name="return" type="tns:account" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="account">
+    <xs:sequence>
+      <xs:element name="code" type="xs:int" />
+      <xs:element minOccurs="0" name="dateCreation" type="xs:dateTime" />
+      <xs:element name="solde" type="xs:double" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="listAccounts">
+    <xs:sequence />
+  </xs:complexType>
+  <xs:complexType name="listAccountsResponse">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="return" type="tns:account" />
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>
