@@ -1,0 +1,19 @@
+.listbox{
+  width: 20%;
+  float: left;
+  padding: 0 15px;
+}
+
+.ordersList{
+  width: 40%;
+  padding: 0 15px;
+}
+
+.productsList{
+  width: 40%;
+  padding: 0 15px;
+}
+
+.selection{
+  display: flex;
+}

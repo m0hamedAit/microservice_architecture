@@ -55,6 +55,7 @@ public class OrderServiceApplication {
 						ProductItem productItem = ProductItem.builder()
 								.productId(products.get(j).getId())
 								.order(savedOrder)
+								.productName(products.get(j).getName())
 								.quantity(1+random.nextInt(10))
 								.price(products.get(j).getPrice())
 								.discount(Math.random())

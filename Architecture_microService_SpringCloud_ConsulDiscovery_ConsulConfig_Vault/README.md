@@ -1,35 +1,66 @@
 # Architecture microService avec Spring Cloud : Use Case
 
-#### Application overview
+### Application overview
+<img src="img/architecture.png" style="display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;">
 
 
-#### Project stucture
+### Project stucture
 
 ```Java
 project   
-└───config-service
-│
-└───customer-service
-│
-└───inventory-service
-│
-└───order-service
-│
-└───gateway-service
-│
-└───billing-service
-│
-└───ecom
-|   |
-|   └───config-repo
-│       │   application.properties  // global configs (shared by all service)
-│       │   customer_service.properties  // default config for customer_service (if no env specified)
-|       │   customer_service-dev.properties  // customer_service config for dev env
-|       │   customer_service-prod.properties  // customer_service config for prod env
-│       │   ...
-│   
+└───services
+│        └───config-service
+│        │
+│        └───customer-service
+│        │
+│        └───inventory-service
+│        │
+│        └───order-service
+│        │
+│        └───gateway-service
+│        │
+│        └───billing-service
+│        
+└───configs
+│        |
+│        └───config-repo
+│            │
+│            └───   application.│properties  // global configs │(shared by all service)
+│            │
+│            └───   customer_service.properties  // default config for customer_service (if no env specified)
+│            │
+│            └───   customer_service-dev.properties  // customer_service config for dev env
+│            │
+│            └───   customer_service-prod.properties  // customer_service config for prod env
+│            │
+│            └───   ...
+│ 
+└───web-app       
 ```
+### Tools
+- **Consul :** HashiCorp Consul is a service networking solution that enables teams to manage secure network connectivity between services and across on-prem and multi-cloud environments and runtimes. Consul offers service discovery, service mesh, traffic management, and automated updates to network infrastructure device. You can use these features individually or together in a single Consul deployment. 
+    - Get it from [consul.io](https://consul.io)
+    - Launch it with 
+        - `cd {consulEXE dir}`
+        - `consul agent -server -bootstrap-expect=1 -data-dir=consul-data -ui -bind={ip@}`
+    - Access it : `localhost:8500` 
 
+- **Vault :** Vault is an identity-based secret and encryption management system. This documentation covers the main concepts of Vault, what problems it can solve, and contains a quick start for using Vault.
+    - Get it form [Hashicorp Vault](https://www.hashicorp.com/products/vault)
+    - Add env variable if not exist: `set VAULT_ADDR=http://127.0.0.1:8200`
+    - Launch server with:
+      - `cd {vaultEXE dir}`
+      - `vault server -dev` (for development env)
+    - Access it : `localhost:8200`
+    - By default secrets are not persistant (once server is stopped, data will be erased because it uses memory database) but there are ways to make them persistant see [secrets](https://developer.hashicorp.com/vault/docs/commands/secrets)
+  
+- **ZipKin** (still not added to this project) : a distributed tracing system. It helps gather timing data needed to troubleshoot latency problems in service architectures.
+    - Get it from [zipkin.io](https://zipkin.io)
+
+### Code
 #### Dependencies
 ##### Config service
 ```
@@ -82,32 +113,11 @@ project
 - Config client
 ```
 
-#### Tools
-- **Consul :** HashiCorp Consul is a service networking solution that enables teams to manage secure network connectivity between services and across on-prem and multi-cloud environments and runtimes. Consul offers service discovery, service mesh, traffic management, and automated updates to network infrastructure device. You can use these features individually or together in a single Consul deployment. 
-    - Get it from [consul.io](https://consul.io)
-    - Launch it with 
-        - `cd {consulEXE dir}`
-        - `consul agent -server -bootstrap-expect=1 -data-dir=consul-data -ui -bind={ip@}`
-    - Access it : `localhost:8500` 
-
-- **Vault :** Vault is an identity-based secret and encryption management system. This documentation covers the main concepts of Vault, what problems it can solve, and contains a quick start for using Vault.
-    - Get it form [Hashicorp Vault](https://www.hashicorp.com/products/vault)
-    - Add env variable if not exist: `set VAULT_ADDR=http://127.0.0.1:8200`
-    - Launch server with:
-      - `cd {vaultEXE dir}`
-      - `vault server -dev` (for development env)
-    - Access it : `localhost:8200`
-    - By default secrets are not persistant (once server is stopped, data will be erased because it uses memory database) but there are ways to make them persistant see [secrets](https://developer.hashicorp.com/vault/docs/commands/secrets)
-  
-- **ZipKin** (still not added to this project) : a distributed tracing system. It helps gather timing data needed to troubleshoot latency problems in service architectures.
-    - Get it from [zipkin.io](https://zipkin.io)
-
-
-#### Code
+#### Configs
 ##### Configuration properties
 - An empty project that contains properties of different services 
 ```Java
-ecom
+configs
    |
    └───config-repo
        │   application.properties
@@ -118,6 +128,7 @@ ecom
 ```
 - For every modification, we need to commit changes, so those modifs will be taken into consideration
 
+#### Services
 ##### Config Service
 ###### Application
 ```Java
@@ -211,11 +222,29 @@ public class CustomerConfigRestController {
 
 ##### Gateway Service
 ###### Properties
+*application.properties*
 ```Properties
 server.port = 9999
 spring.application.name=gateway-service
 # search remaining properties in config server
 spring.config.import=optional:configserver:http://localhost:8888
+```
+*application.yaml* (added to resolve cors problem)
+```Properties
+Spring:
+  cloud:
+    gateway:
+      globalcors:
+        corsConfigurations:
+          '[/**]':
+            allowedOrigins: "http://localhost:4200" # allow ng app
+            allowedMethods:
+                - GET
+                - POST
+                - PUT
+                - DELETE
+                - OPTIONS
+            allowedHeaders: "*"
 ```
 
 ###### Application
@@ -631,6 +660,13 @@ public class BillingServiceApplication {
 
 ![](img/vault3.png)
 
-
 **If don't have to use both *spring cloud config* and *consul config* at the same time, but some times in big architectures, we have to.**
 **For secrets, we have to use Vault configuration**
+
+### Interfaces
+##### Products
+![](img/pr_interface.png)
+##### Customers
+![](img/customer_interface.png)
+##### Orders
+![](img/order_interface.png)
