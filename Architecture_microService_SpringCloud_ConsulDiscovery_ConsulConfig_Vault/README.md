@@ -7,15 +7,17 @@
 
 ```Java
 project   
-└───config_service
+└───config-service
 │
-└───customer_service
+└───customer-service
 │
-└───inventory_service
+└───inventory-service
 │
-└───order_service
+└───order-service
 │
-└───gateway_service
+└───gateway-service
+│
+└───billing-service
 │
 └───ecom
 |   |
@@ -30,14 +32,14 @@ project
 
 #### Dependencies
 ##### Config service
-```Code
+```
 - Config server
 - Spring Boot Actuator
 - Consul Discovery
 ```
 
 ##### Customer service - Inventory service
-```Code
+```
 - Spring web
 - Spring Data JPA
 - H2 database
@@ -49,7 +51,7 @@ project
 ```
 
 ##### Order service
-```Code
+```
 - Spring web
 - Spring Data JPA
 - H2 database
@@ -62,8 +64,18 @@ project
 - Spring HATEOAS  // because we use Spring data Rest that uses a Json format that respect the HATEOAS norm
 ```
 
+##### Billing service
+```
+- Spring web
+- Lombok
+- Consul Discovery
+- Spring Boot Actuator
+- Consul configuration  // a configuration client based on Consul
+- Vault Configuration   // a configuration for secrets (private keys, passwords, ...)
+```
+
 ##### Gateway service
-```Code
+```
 - Consul Discovery
 - Spring Boot Actuator
 - Gateway
@@ -77,10 +89,19 @@ project
         - `cd {consulEXE dir}`
         - `consul agent -server -bootstrap-expect=1 -data-dir=consul-data -ui -bind={ip@}`
     - Access it : `localhost:8500` 
+
+- **Vault :** Vault is an identity-based secret and encryption management system. This documentation covers the main concepts of Vault, what problems it can solve, and contains a quick start for using Vault.
+    - Get it form [Hashicorp Vault](https://www.hashicorp.com/products/vault)
+    - Add env variable if not exist: `set VAULT_ADDR=http://127.0.0.1:8200`
+    - Launch server with:
+      - `cd {vaultEXE dir}`
+      - `vault server -dev` (for development env)
+    - Access it : `localhost:8200`
+    - By default secrets are not persistant (once server is stopped, data will be erased because it uses memory database) but there are ways to make them persistant see [secrets](https://developer.hashicorp.com/vault/docs/commands/secrets)
   
-- **ZipKin** : a distributed tracing system. It helps gather timing data needed to troubleshoot latency problems in service architectures.
-    - Get it from [eipkin.io](https://zipkin.io)
-    - 
+- **ZipKin** (still not added to this project) : a distributed tracing system. It helps gather timing data needed to troubleshoot latency problems in service architectures.
+    - Get it from [zipkin.io](https://zipkin.io)
+
 
 #### Code
 ##### Configuration properties
@@ -114,7 +135,8 @@ public class ConfigServiceApplication {
 ```Properties
 server.port=8888
 spring.application.name=config-service
-spring.cloud.config.server.git.uri=file:///{config-repo dir}
+# specify where spring cloud configuration files are located
+spring.cloud.config.server.git.uri=file:///{config-repo dir}  
 ```
 
 When launching the application, it will be automaticly registred to Consul discovery, due to consul discovery dependency
@@ -312,6 +334,10 @@ public class InventoryServiceApplication {
     server.port=8085
     spring.application.name=order-service
     spring.config.import=optional:configserver:http://localhost:8888
+
+    logging.level.me.m0hamedait.order_service.services.CustomerRestClientService = debug
+    logging.level.me.m0hamedait.order_service.services.InventoryRestClientService = debug
+    feign.client.config.default.loggerLevel=full
 ```
 
 ###### Entities
@@ -492,7 +518,119 @@ public class OrderRestController {
 ![](img/order3.png)
 
 
+##### Billing service
+###### Properties
+```Properties
+server.port = 8086
+spring.application.name = billing-service
+# indicate where Consul configuration files are located
+# we can import multiple configuration (spring cloud config, consul config ,...) separated using comma
+# spring.config.import=optional:consul:
+
+# for Vault config
+## toChange : root token generated after starting vault server
+spring.cloud.vault.token = hvs.0T1NXvIHnXIptqJQ6FZsiUuC
+spring.cloud.vault.scheme = http
+spring.cloud.vault.kv.enabled = true
+
+spring.config.import=optional:consul:, vault://
+management.endpoints.web.exposure.include=*
+```
+
+###### Add Consul configuration (Key/value)
+![](img/secrets1.png)
+![](img/secrets2.png)
+
+###### Config RestController
+**1st method**
+*ConsulConfigRestController*
+```Java
+import org.springframework.beans.factory.annotation.Value;
+
+@RestController
+@RefreshScope  // refresh config if there is changes
+public class ConsulConfigRestController {
+    @Value("${token.accessTokenTimeout}") // By default, it will look for a property named token.accessTokenTimeout in config/{this-service-name}
+    private long accessTokenTimeout;
+    @Value("${token.refreshTokenTimeout}")
+    private long refreshTokenTimeout;
+
+    @GetMapping("/config")
+    public Map<String, Object> myConfig(){
+        return Map.of("accessTokenTimeout", accessTokenTimeout, "refreshTokenTimeout", refreshTokenTimeout);
+    }
+}
+```
+
+**2nd method**
+*MyConsulConfig*
+```Java
+@Component
+@Data
+@ConfigurationProperties(prefix = "token")
+public class MyConsulConfig {
+    private long accessTokenTimeout; // it will look for "token.acessTokenTimeout" in consul -> key/value -> config/{this-service-name}
+    private long refreshTokenTimeout;
+}
+```
+
+*MyVaultConfig*
+```Java
+@Component
+@Data
+@ConfigurationProperties(prefix = "user")
+public class MyVaultConfig {
+    private String username;
+    private String password;
+    private String otp;
+}
+```
+
+*ConfigRestController*
+```Java
+@RestController
+@AllArgsConstructor
+public class ConsulConfigRestController {
+    private MyConsulConfig myConsulConfig;
+    private MyVaultConfig myVaultConfig;
+
+    @GetMapping("/config")
+    public Map<String,Object> myConfig(){
+        return Map.of("consulConfig",myConsulConfig,"vaultConfig",myVaultConfig);
+    }
+}
+```
+![](img/conf.png)
+###### Application
+```Java
+@SpringBootApplication
+public class BillingServiceApplication {
+
+	@Autowired
+	private VaultTemplate vaultTemplate; // used to be able to use any vault service (communicate secrets, encryption, ...)
+
+	public static void main(String[] args) {
+		SpringApplication.run(BillingServiceApplication.class, args);
+	}
+
+	@Bean
+	CommandLineRunner addSecrets(){
+		return args -> {
+			Versioned.Metadata res =vaultTemplate.opsForVersionedKeyValue("secret")
+					.put("keypair", Map.of("private_key","123","public_key","456"));
+		};
+	}
+}
+```
+
+### Vault :
+![](img/vault1.png)
+- Token is generated once the server is up
+- Add secrets : `vault kv put secret/billing-service user.username=m0hamedait user.password=ItsNotMyPassword!TrustMe`
+- Show secrets : `vault kv get secret/billing-service`
+
+![](img/vault3.png)
 
 
-
-
+**If don't have to use both *spring cloud config* and *consul config* at the same time, but some times in big architectures, we have to.**
+**For secrets, we have to use Vault configuration**
