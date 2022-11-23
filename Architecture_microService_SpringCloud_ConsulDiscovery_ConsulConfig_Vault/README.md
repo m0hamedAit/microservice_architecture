@@ -1,13 +1,22 @@
 # Architecture microService avec Spring Cloud : Use Case
 
-### Application overview
+- [Application overview](#overview)
+- [Project structure](#project_structure)
+- [Tools](#tools)
+    - [Consul](#consul)
+    - [Vault](#vault)
+    - [ZipKin](#zipkin)
+- [Services](#services)
+- [Interfaces](#interfaces)
+
+### <a id="overview"></a>Application overview
 <img src="img/architecture.png" style="display: block;
   margin-left: auto;
   margin-right: auto;
   width: 50%;">
 
 
-### Project stucture
+### <a id="project_structure"></a>Project structure
 
 ```Java
 project   
@@ -41,14 +50,14 @@ project
 └───web-app       
 ```
 ### Tools
-- **Consul :** HashiCorp Consul is a service networking solution that enables teams to manage secure network connectivity between services and across on-prem and multi-cloud environments and runtimes. Consul offers service discovery, service mesh, traffic management, and automated updates to network infrastructure device. You can use these features individually or together in a single Consul deployment. 
+- <a id="consul"></a>**Consul :** HashiCorp Consul is a service networking solution that enables teams to manage secure network connectivity between services and across on-prem and multi-cloud environments and runtimes. Consul offers service discovery, service mesh, traffic management, and automated updates to network infrastructure device. You can use these features individually or together in a single Consul deployment. 
     - Get it from [consul.io](https://consul.io)
     - Launch it with 
         - `cd {consulEXE dir}`
         - `consul agent -server -bootstrap-expect=1 -data-dir=consul-data -ui -bind={ip@}`
     - Access it : `localhost:8500` 
 
-- **Vault :** Vault is an identity-based secret and encryption management system. This documentation covers the main concepts of Vault, what problems it can solve, and contains a quick start for using Vault.
+- <a id="vault"></a>**Vault :** Vault is an identity-based secret and encryption management system. This documentation covers the main concepts of Vault, what problems it can solve, and contains a quick start for using Vault.
     - Get it form [Hashicorp Vault](https://www.hashicorp.com/products/vault)
     - Add env variable if not exist: `set VAULT_ADDR=http://127.0.0.1:8200`
     - Launch server with:
@@ -57,10 +66,10 @@ project
     - Access it : `localhost:8200`
     - By default secrets are not persistant (once server is stopped, data will be erased because it uses memory database) but there are ways to make them persistant see [secrets](https://developer.hashicorp.com/vault/docs/commands/secrets)
   
-- **ZipKin** (still not added to this project) : a distributed tracing system. It helps gather timing data needed to troubleshoot latency problems in service architectures.
+- <a id="zipkin"></a>**ZipKin** (still not added to this project) : a distributed tracing system. It helps gather timing data needed to troubleshoot latency problems in service architectures.
     - Get it from [zipkin.io](https://zipkin.io)
 
-### Code
+### <a name="services"></a>Services
 #### Dependencies
 ##### Config service
 ```
