@@ -669,7 +669,7 @@ public class BillingServiceApplication {
 
 ![](img/vault3.png)
 
-**If don't have to use both *spring cloud config* and *consul config* at the same time, but some times in big architectures, we have to.**
+**We don't have to use both *spring cloud config* and *consul config* at the same time, but some times in big architectures, we have to.**
 **For secrets, we have to use Vault configuration**
 
 ### Interfaces
