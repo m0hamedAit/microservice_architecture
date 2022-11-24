@@ -1,22 +1,66 @@
 # Architecture microService avec Spring Cloud : Use Case
 
-- [Application overview](#overview)
-- [Project structure](#project_structure)
-- [Tools](#tools)
-    - [Consul](#consul)
-    - [Vault](#vault)
-    - [ZipKin](#zipkin)
-- [Services](#services)
-- [Interfaces](#interfaces)
 
-### <a id="overview"></a>Application overview
+- [Architecture microService avec Spring Cloud : Use Case](#architecture-microservice-avec-spring-cloud--use-case)
+    - [Application overview](#application-overview)
+    - [Project structure](#project-structure)
+    - [Tools](#tools)
+    - [Code](#code)
+      - [Dependencies](#dependencies)
+        - [Config service](#config-service)
+        - [Customer service - Inventory service](#customer-service---inventory-service)
+        - [Order service](#order-service)
+        - [Billing service](#billing-service)
+        - [Gateway service](#gateway-service)
+      - [Configs](#configs)
+        - [Configuration properties](#configuration-properties)
+      - [Services](#services)
+        - [Config Service](#config-service-1)
+          - [Application](#application)
+          - [properties](#properties)
+        - [Customer Service](#customer-service)
+          - [Properties](#properties-1)
+          - [RestController](#restcontroller)
+          - [Enable Auto-configuration with Actuator](#enable-auto-configuration-with-actuator)
+        - [Gateway Service](#gateway-service-1)
+          - [Properties](#properties-2)
+          - [Application](#application-1)
+        - [Inventory Service](#inventory-service)
+          - [Properties](#properties-3)
+          - [Product Entity](#product-entity)
+          - [Product Projection](#product-projection)
+          - [Product Repository](#product-repository)
+          - [Application](#application-2)
+          - [inventory-service.properties](#inventory-serviceproperties)
+        - [Order Service](#order-service-1)
+          - [Properties](#properties-4)
+          - [Entities](#entities)
+          - [Models](#models)
+          - [Repositories](#repositories)
+          - [Services](#services-1)
+          - [Application](#application-3)
+          - [RestController](#restcontroller-1)
+          - [order-service.properties](#order-serviceproperties)
+          - [Screens](#screens)
+        - [Billing service](#billing-service-1)
+          - [Properties](#properties-5)
+          - [Add Consul configuration (Key/value)](#add-consul-configuration-keyvalue)
+          - [Config RestController](#config-restcontroller)
+          - [Application](#application-4)
+    - [Vault](#vault)
+    - [Interfaces](#interfaces)
+        - [Products](#products)
+        - [Customers](#customers)
+        - [Orders](#orders)
+
+### Application overview
 <img src="img/architecture.png" style="display: block;
   margin-left: auto;
   margin-right: auto;
   width: 50%;">
 
 
-### <a id="project_structure"></a>Project structure
+### Project structure
 
 ```Java
 project   
@@ -50,14 +94,14 @@ project
 └───web-app       
 ```
 ### Tools
-- <a id="consul"></a>**Consul :** HashiCorp Consul is a service networking solution that enables teams to manage secure network connectivity between services and across on-prem and multi-cloud environments and runtimes. Consul offers service discovery, service mesh, traffic management, and automated updates to network infrastructure device. You can use these features individually or together in a single Consul deployment. 
+- **Consul :** HashiCorp Consul is a service networking solution that enables teams to manage secure network connectivity between services and across on-prem and multi-cloud environments and runtimes. Consul offers service discovery, service mesh, traffic management, and automated updates to network infrastructure device. You can use these features individually or together in a single Consul deployment. 
     - Get it from [consul.io](https://consul.io)
     - Launch it with 
         - `cd {consulEXE dir}`
         - `consul agent -server -bootstrap-expect=1 -data-dir=consul-data -ui -bind={ip@}`
     - Access it : `localhost:8500` 
 
-- <a id="vault"></a>**Vault :** Vault is an identity-based secret and encryption management system. This documentation covers the main concepts of Vault, what problems it can solve, and contains a quick start for using Vault.
+- **Vault :** Vault is an identity-based secret and encryption management system. This documentation covers the main concepts of Vault, what problems it can solve, and contains a quick start for using Vault.
     - Get it form [Hashicorp Vault](https://www.hashicorp.com/products/vault)
     - Add env variable if not exist: `set VAULT_ADDR=http://127.0.0.1:8200`
     - Launch server with:
@@ -66,10 +110,10 @@ project
     - Access it : `localhost:8200`
     - By default secrets are not persistant (once server is stopped, data will be erased because it uses memory database) but there are ways to make them persistant see [secrets](https://developer.hashicorp.com/vault/docs/commands/secrets)
   
-- <a id="zipkin"></a>**ZipKin** (still not added to this project) : a distributed tracing system. It helps gather timing data needed to troubleshoot latency problems in service architectures.
+- **ZipKin** (still not added to this project) : a distributed tracing system. It helps gather timing data needed to troubleshoot latency problems in service architectures.
     - Get it from [zipkin.io](https://zipkin.io)
 
-### <a name="services"></a>Services
+### Code
 #### Dependencies
 ##### Config service
 ```
@@ -661,7 +705,7 @@ public class BillingServiceApplication {
 }
 ```
 
-### Vault :
+### Vault
 ![](img/vault1.png)
 - Token is generated once the server is up
 - Add secrets : `vault kv put secret/billing-service user.username=m0hamedait user.password=ItsNotMyPassword!TrustMe`
