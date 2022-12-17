@@ -1,0 +1,35 @@
+.listbox{
+  width: 20%;
+  float: left;
+  padding: 0 15px;
+}
+
+.ordersList{
+  width: 40%;
+  padding: 0 15px;
+}
+
+.productsList{
+  width: 40%;
+  padding: 0 15px;
+}
+
+.status-CREATED{
+  color: rgb(28, 204, 231);
+}
+
+.status-PENDING{
+  color: rgb(25, 97, 212);
+}
+
+.status-DELIVERED{
+  color: rgb(58, 189, 58);
+}
+
+.status-CANCELLED{
+  color: #dc5858;
+}
+
+.selection{
+  display: flex;
+}

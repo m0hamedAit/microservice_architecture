@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: org.springframework.security:spring-security-crypto:6.0.0-SNAPSHOT">
+    <CLASSES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/springframework/security/spring-security-crypto/6.0.0-SNAPSHOT/spring-security-crypto-6.0.0-20221120.101227-637.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$MAVEN_REPOSITORY$/org/springframework/security/spring-security-crypto/6.0.0-SNAPSHOT/spring-security-crypto-6.0.0-20221120.101227-637-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$MAVEN_REPOSITORY$/org/springframework/security/spring-security-crypto/6.0.0-SNAPSHOT/spring-security-crypto-6.0.0-20221120.101227-637-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

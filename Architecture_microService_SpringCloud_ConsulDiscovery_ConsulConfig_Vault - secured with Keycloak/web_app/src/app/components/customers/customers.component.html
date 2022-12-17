@@ -1,0 +1,26 @@
+<div class="card" style="margin:100px">
+  <h3>Customers</h3>
+  <p-table [value]="customers" [tableStyle]="{'min-width': '60rem'}">
+      <ng-template pTemplate="header">
+          <tr>
+              <th pSortableColumn="id" style="width:20%">Id <p-sortIcon field="id"></p-sortIcon></th>
+              <th pSortableColumn="name" style="width:20%">Name <p-sortIcon field="name"></p-sortIcon></th>
+              <th pSortableColumn="email" style="width:20%">Email <p-sortIcon field="email"></p-sortIcon></th>
+              <th></th>
+          </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-customer>
+          <tr>
+            <td>{{customer.id}}</td>
+              <td>{{customer.name}}</td>
+              <td>{{customer.email}}</td>
+              
+              <td style="text-align:center">
+                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editCustomer(customer)"></button>
+                &nbsp;
+                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning" (click)="deleteCustomer(customer)"></button>
+            </td>
+          </tr>
+      </ng-template>
+  </p-table>
+</div>
