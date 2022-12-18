@@ -1,8 +1,4 @@
 ## How To Secure Distributed Systems Using Oauth2 OIDC JWT
-- **Keycloak**
-- **Quarkos**
-- difference entre Quarkos et spring boot:
-
 ### Keycloak :
   - install from : [keycloak](https://www.keycloak.org/downloads)
   - Launch Keycloak server: **keycloak/bin >** `kc.[bat/sh] start-dev`
