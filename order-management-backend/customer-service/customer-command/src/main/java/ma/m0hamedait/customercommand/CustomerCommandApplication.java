@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import ma.m0hamedait.CreateCustomerCommand;
 import ma.m0hamedait.ordermanagementbackend.AxonConfig;
 import net.datafaker.Faker;
-import org.axonframework.commandhandling.CommandBus;
-import org.axonframework.commandhandling.SimpleCommandBus;
 import org.axonframework.commandhandling.gateway.CommandGateway;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
